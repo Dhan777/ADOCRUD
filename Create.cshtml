@@ -1,59 +1,59 @@
-﻿@model MvcApplication2.Models.Tab
-
+﻿@model MvcApplication4.Models.Student
 @{
     ViewBag.Title = "Create";
 }
-
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
 <h2>Create</h2>
 
-@using (Html.BeginForm()) {
-    @Html.ValidationSummary(true)
+@using(Html.BeginForm("Create", "Registration", FormMethod.Post))
+{
+<table>
+    <tr>
+        <th>@Html.LabelFor(x=>x.Name)</th>
+        <td>@Html.EditorFor(x=>x.Name)</td>
+    </tr>
+     <tr>
+        <th>@Html.LabelFor(x=>x.Age)</th>
+        <td>@Html.EditorFor(x=>x.Age)</td>
+    </tr>
+    <tr>
+        <th>@Html.LabelFor(x=>x.Country)</th>
+        <td>@Html.DropDownListFor(x=>x.Country,(new MvcApplication4.Controllers.MasterController()).LoadCountry(),"Select")</td>
+    </tr>
 
-    <fieldset>
-        <legend>Tab</legend>
+    <tr>
+        <th>@Html.LabelFor(x=>x.State)</th>
+        @*<td>@Html.DropDownListFor(x => x.State, new SelectList(Enumerable.Empty<SelectListItem>(), "Text", "Value","Select Pooja"))</td>*@
+        <td>@Html.DropDownListFor(x => x.State, new SelectList(String.Empty),"Select State")</td>
+    </tr>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Name)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Name)
-            @Html.ValidationMessageFor(model => model.Name)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Age)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Age)
-            @Html.ValidationMessageFor(model => model.Age)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Email)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Email)
-            @Html.ValidationMessageFor(model => model.Email)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.ProcId)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.ProcId)
-            @Html.ValidationMessageFor(model => model.ProcId)
-        </div>
-
-        <p>
-            <input type="submit" value="Create" />
-        </p>
-    </fieldset>
+</table>
+      <input type="submit" value="Save" />
 }
+<script>
+    $(document).ready(function ()
+    {
+        $("#Country").change(function ()
+        {
+            $.ajax({
+                type: "get",
+                url: "/Registration/State",
+                data: { CountryId: $("#Country").val() },
+                success: function (data)
+                {
+                    $("#State").html("");
+                    $("#State").append("<option value=0>Select State</option>");
+                    debugger;
+                    $.each(data,function (i, v) {
+                        debugger;
+                        $("#State").append("<option value=" + v.Value + ">" + v.Name + "</option>");
+                    });
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+                },
+                error: function (xhtr)
+                {
+                }
+            });
+        });
+    });
+</script>
